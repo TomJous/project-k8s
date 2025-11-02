@@ -48,5 +48,5 @@ spec:
       port: 61616
       targetPort: 61616
       name: second-port
-  type: LoadBalancer
+  type: ClusterIP
 ---

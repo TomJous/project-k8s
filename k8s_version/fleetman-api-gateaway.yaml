@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fleetman-position-simulator
+  name: fleetman-api-gateaway
   namespace: fleetman
   labels:
-    app: fleetman-fleetman-position-simulator
+    app: fleetman-api-gateaway
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: fleetman-position-simulator
+      app: fleetman-api-gateaway
   template:
     metadata:
       labels:
-        app: fleetman-position-simulator
+        app: fleetman-api-gateaway
     spec:
       containers:
-        - name: fleetman-position-simulator
-          image: richardchesterwood/k8s-fleetman-position-simulator:release2
+        - name: fleetman-api-gateaway
+          image: supinfo4kube/api-gateway:1.0.1
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: local-microservice
@@ -32,14 +32,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: fleetman-position-simulator
+  name: fleetman-api-gateaway
   namespace: fleetman
 spec:
   selector:
-    app: fleetman-position-simulator
+    app: fleetman-api-gateaway
   ports:
     - protocol: TCP
-      port: 8080
+      port: 30020
       targetPort: 8080
       name: http
   type: ClusterIP

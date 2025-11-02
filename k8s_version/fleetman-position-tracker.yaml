@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fleetman-position-simulator
+  name: fleetman-position-tracker
   namespace: fleetman
   labels:
-    app: fleetman-fleetman-position-simulator
+    app: fleetman-position-tracker
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: fleetman-position-simulator
+      app: fleetman-position-tracker
   template:
     metadata:
       labels:
-        app: fleetman-position-simulator
+        app: fleetman-position-tracker
     spec:
       containers:
-        - name: fleetman-position-simulator
-          image: richardchesterwood/k8s-fleetman-position-simulator:release2
+        - name: fleetman-position-tracker
+          image: supinfo4kube/position-tracker:1.0.1
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: local-microservice
@@ -32,14 +32,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: fleetman-position-simulator
+  name: fleetman-position-tracker
   namespace: fleetman
 spec:
   selector:
-    app: fleetman-position-simulator
+    app: fleetman-position-tracker
   ports:
     - protocol: TCP
-      port: 8080
+      port: 30010
       targetPort: 8080
       name: http
   type: ClusterIP
