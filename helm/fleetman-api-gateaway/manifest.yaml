@@ -1,0 +1,34 @@
+---
+# Source: fleetman-api-gateaway/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-api-gateaway-release-name
+  namespace: fleetman-api-gateaway
+  labels:
+    app: fleetman-api-gateaway-release-name
+spec:
+  replicas: 
+  selector:
+    matchLabels:
+      app: fleetman-api-gateaway
+  template:
+    metadata:
+      labels:
+        app: fleetman-api-gateaway
+    spec:
+      containers:
+        - name: fleetman-api-gateaway
+          image: supinfo4kube/api-gateway:1.0.1
+          
+          # Définition de mes dict pour éviter accès à la nil (éviter les erreurs)
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: local-microservice
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "20m"
+            limits:
+              memory: "512Mi"
+              cpu: "50m"

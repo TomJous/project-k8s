@@ -1,0 +1,21 @@
+
+deployment:
+
+    container:
+      image: supinfo4kube/api-gateway:1.0.1
+    
+    env:
+      enabled: true
+      name: SPRING_PROFILES_ACTIVE
+      value: local-microservice
+    
+    ressources:
+      enabled: true
+
+      requests:
+        memory: "256Mi"
+        cpu: "20m"
+      
+      limits:
+        memory: "512Mi"
+        cpu: "50m"
