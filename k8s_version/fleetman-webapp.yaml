@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-webapp
+  namespace: fleetman
+  labels:
+    app: fleetman-webapp
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fleetman-webapp
+  template:
+    metadata:
+      labels:
+        app: fleetman-webapp
+    spec:
+      containers:
+        - name: fleetman-webapp
+          image: supinfo4kube/web-app:1.1.0
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: local-microservice
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "20m"
+            limits:
+              memory: "512Mi"
+              cpu: "50m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-webapp
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-webapp
+  ports:
+    - protocol: TCP
+      port: 30080
+      targetPort: 8080
+      name: http
+  type: LoadBalancer

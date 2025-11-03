@@ -1,0 +1,85 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-data
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: slow
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /tmp
+    server: 172.17.0.2
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-data-claim
+  namespace: fleetman
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: slow
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-mongodb
+  namespace: fleetman
+  labels:
+    app: fleetman-mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fleetman-mongodb
+  template:
+    metadata:
+      labels:
+        app: fleetman-mongodb
+    spec:
+      containers:
+        - name: fleetman-mongodb
+          image: mongo:3.6.23
+          ports:
+            - containerPort: 27017
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "20m"
+            limits:
+              memory: "512Mi"
+              cpu: "50m"
+          volumeMounts:
+            - name: mongo-storage
+              mountPath: /data/db
+      volumes:
+        - name: mongo-storage
+          persistentVolumeClaim:
+            claimName: mongo-data-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-mongodb
+  namespace: fleetman
+  labels:
+    app: fleetman-mongodb
+spec:
+  selector:
+    app: fleetman-mongodb
+  ports:
+    - name: mongo
+      port: 27017
+      targetPort: 27017
+  type: ClusterIP
