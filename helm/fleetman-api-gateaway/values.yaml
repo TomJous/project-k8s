@@ -1,6 +1,8 @@
 
 deployment:
 
+    replicas: 2
+
     container:
       image: supinfo4kube/api-gateway:1.0.1
     
@@ -19,3 +21,13 @@ deployment:
       limits:
         memory: "512Mi"
         cpu: "50m"
+
+# Service
+service:
+  
+  ports:
+
+    first-port:
+      name: http
+      port: 30020
+      targetPort: 8080
