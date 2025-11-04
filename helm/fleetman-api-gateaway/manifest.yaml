@@ -1,14 +1,50 @@
 ---
+# Source: fleetman-api-gateaway/templates/persistentVolume.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fleetman-api-gateaway-release-name
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: slow
+  mountOptions:
+    - hard
+    - nfsvers=4.1
+  nfs:
+    path: /tmp
+    server: 172.17.0.2
+---
+# Source: fleetman-api-gateaway/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-api-gateaway-release-name
+  namespace: 
+spec:
+  selector:
+    app: fleetman-api-gateaway
+  ports:
+    - protocol: TCP
+      name: http
+      port: 30020
+      targetPort: 8080
+  type: ClusterIP
+---
 # Source: fleetman-api-gateaway/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fleetman-api-gateaway-release-name
-  namespace: fleetman-api-gateaway
+  namespace: 
   labels:
     app: fleetman-api-gateaway-release-name
 spec:
-  replicas: 
+  replicas: 2
   selector:
     matchLabels:
       app: fleetman-api-gateaway

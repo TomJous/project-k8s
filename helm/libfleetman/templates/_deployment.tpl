@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
-  namespace: {{ .Chart.Name }}
+  namespace: {{ .Values.namespace }}
   labels:
     app: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
 spec:

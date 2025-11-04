@@ -1,0 +1,6 @@
+dependencies:
+- name: libfleetman
+  repository: file://../libfleetman
+  version: 0.1.0
+digest: sha256:bf2341c8ab7d63f0fd75b24e5a8726f27a75706dfe0ec6464d552ad927540d2a
+generated: "2025-11-04T19:53:41.552025703+01:00"
