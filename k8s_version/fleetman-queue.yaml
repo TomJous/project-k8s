@@ -22,7 +22,9 @@ spec:
           image: richardchesterwood/k8s-fleetman-queue:release2
           ports:
           - containerPort: 8161
+          - targetPort: 8161
           - containerPort: 61616
+          - targetPort: 61616
           resources:
             requests:
               memory: "256Mi"

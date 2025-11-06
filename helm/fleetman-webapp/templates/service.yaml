@@ -1,15 +1,1 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ include "fleetman-webapp.fullname" . }}
-  labels:
-    {{- include "fleetman-webapp.labels" . | nindent 4 }}
-spec:
-  type: {{ .Values.service.type }}
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: http
-      protocol: TCP
-      name: http
-  selector:
-    {{- include "fleetman-webapp.selectorLabels" . | nindent 4 }}
+{{- include "libfleetman.service.tpl" .  -}}

@@ -1,33 +1,38 @@
-
+# Deployment
 deployment:
-
+    # precise the number of replicas
     replicas: 2
-
+    # precise the container image used for this chart
     container:
       image: supinfo4kube/api-gateway:1.0.1
-    
+    # precise the environment to use 
     env:
       enabled: true
       name: SPRING_PROFILES_ACTIVE
       value: local-microservice
-    
+
+    ports:
+      first-port: 
+        containerPort: 8090
+        targetPort: 8080
+      
+    # it's about the ressources that can be used for this deployment
     ressources:
       enabled: true
-
       requests:
         memory: "256Mi"
-        cpu: "20m"
-      
+        cpu: "20m"  
       limits:
         memory: "512Mi"
         cpu: "50m"
 
 # Service
 service:
-  
+  # precise the differents ports to use for the application
   ports:
-
     first-port:
       name: http
       port: 30020
       targetPort: 8080
+
+namespace: fleetman
