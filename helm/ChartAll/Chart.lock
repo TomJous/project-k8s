@@ -1,0 +1,24 @@
+dependencies:
+- name: fleetman-position-simulator
+  repository: file://../fleetman-position-simulator
+  version: 0.1.0
+- name: fleetman-api-gateaway
+  repository: file://../fleetman-api-gateaway
+  version: 0.1.0
+- name: fleetman-mongodb
+  repository: file://../fleetman-mongodb
+  version: 0.1.0
+- name: fleetman-position-tracker
+  repository: file://../fleetman-position-tracker
+  version: 0.1.0
+- name: fleetman-queue
+  repository: file://../fleetman-queue
+  version: 0.1.0
+- name: fleetman-webapp
+  repository: file://../fleetman-webapp
+  version: 0.1.0
+- name: namespace
+  repository: file://../namespace
+  version: 0.1.0
+digest: sha256:00f7e079ea49c240ded2403d238f4ad2b8925f655397944fe8c6dceb78854bb8
+generated: "2025-11-06T22:47:49.539828975+01:00"

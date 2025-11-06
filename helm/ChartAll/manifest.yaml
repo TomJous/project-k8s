@@ -1,0 +1,307 @@
+---
+# Source: ChartAll/charts/namespace/templates/namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: fleetman
+---
+# Source: ChartAll/charts/fleetman-api-gateaway/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-api-gateaway-release-name
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-api-gateaway
+  ports:
+    - protocol: TCP
+      name: http
+      port: 30020
+      targetPort: 8080
+  type: ClusterIP
+---
+# Source: ChartAll/charts/fleetman-mongodb/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-mongodb-release-name
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-mongodb
+  ports:
+    - protocol: TCP
+      name: http
+      port: 27017
+      targetPort: 27017
+  type: ClusterIP
+---
+# Source: ChartAll/charts/fleetman-position-simulator/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-position-simulator-release-name
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-position-simulator
+  ports:
+    - protocol: TCP
+      name: http
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+# Source: ChartAll/charts/fleetman-position-tracker/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-position-tracker-release-name
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-position-tracker
+  ports:
+    - protocol: TCP
+      name: first-port
+      port: 8161
+      targetPort: 8161
+    - protocol: TCP
+      name: second-port
+      port: 61616
+      targetPort: 61616
+  type: ClusterIP
+---
+# Source: ChartAll/charts/fleetman-queue/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-queue-release-name
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-queue
+  ports:
+    - protocol: TCP
+      name: http
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+# Source: ChartAll/charts/fleetman-webapp/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-webapp-release-name
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-webapp
+  ports:
+    - protocol: TCP
+      name: http
+      port: 3080
+      targetPort: 8080
+  type: LoadBalancer
+---
+# Source: ChartAll/charts/fleetman-api-gateaway/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-api-gateaway-release-name
+  namespace: fleetman
+  labels:
+    app: fleetman-api-gateaway-release-name
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fleetman-api-gateaway
+  template:
+    metadata:
+      labels:
+        app: fleetman-api-gateaway
+    spec:
+      containers:
+        - name: fleetman-api-gateaway
+          image: supinfo4kube/api-gateway:1.0.1
+          ports:
+          - containerPort: 8090
+          - targetPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: local-microservice
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "20m"
+            limits:
+              memory: "512Mi"
+              cpu: "50m"
+---
+# Source: ChartAll/charts/fleetman-mongodb/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-mongodb-release-name
+  namespace: fleetman
+  labels:
+    app: fleetman-mongodb-release-name
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fleetman-mongodb
+  template:
+    metadata:
+      labels:
+        app: fleetman-mongodb
+    spec:
+      containers:
+        - name: fleetman-mongodb
+          image: mongo:3.6.23
+          ports:
+          - containerPort: 27019
+          - targetPort: 27019
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "20m"
+            limits:
+              memory: "512Mi"
+              cpu: "50m"
+---
+# Source: ChartAll/charts/fleetman-position-simulator/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-position-simulator-release-name
+  namespace: fleetman
+  labels:
+    app: fleetman-position-simulator-release-name
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fleetman-position-simulator
+  template:
+    metadata:
+      labels:
+        app: fleetman-position-simulator
+    spec:
+      containers:
+        - name: fleetman-position-simulator
+          image: richardchesterwood/k8s-fleetman-position-simulator:release2
+          ports:
+          - containerPort: 5010
+          - targetPort: 5010
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: local-microservice
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "20m"
+            limits:
+              memory: "512Mi"
+              cpu: "50m"
+---
+# Source: ChartAll/charts/fleetman-position-tracker/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-position-tracker-release-name
+  namespace: fleetman
+  labels:
+    app: fleetman-position-tracker-release-name
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fleetman-position-tracker
+  template:
+    metadata:
+      labels:
+        app: fleetman-position-tracker
+    spec:
+      containers:
+        - name: fleetman-position-tracker
+          image: supinfo4kube/position-tracker:1.0.1
+          ports:
+          - containerPort: 8090
+          - targetPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: local-microservice
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "20m"
+            limits:
+              memory: "512Mi"
+              cpu: "50m"
+---
+# Source: ChartAll/charts/fleetman-queue/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-queue-release-name
+  namespace: fleetman
+  labels:
+    app: fleetman-queue-release-name
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fleetman-queue
+  template:
+    metadata:
+      labels:
+        app: fleetman-queue
+    spec:
+      containers:
+        - name: fleetman-queue
+          image: richardchesterwood/k8s-fleetman-queue:release2
+          ports:
+          - containerPort: 8090
+          - targetPort: 8080
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "20m"
+            limits:
+              memory: "512Mi"
+              cpu: "50m"
+---
+# Source: ChartAll/charts/fleetman-webapp/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-webapp-release-name
+  namespace: fleetman
+  labels:
+    app: fleetman-webapp-release-name
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fleetman-webapp
+  template:
+    metadata:
+      labels:
+        app: fleetman-webapp
+    spec:
+      containers:
+        - name: fleetman-webapp
+          image: supinfo4kube/web-app:1.1.0
+          ports:
+          - containerPort: 8090
+          - targetPort: 8080
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "20m"
+            limits:
+              memory: "512Mi"
+              cpu: "50m"

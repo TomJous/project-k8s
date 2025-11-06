@@ -18,26 +18,12 @@ spec:
     spec:
       containers:
         - name: {{ .Chart.Name }}
-          image: {{ .Values.deployment.container.image }}
-          
-          # Définition de mes dict pour éviter accès à la nil (éviter les erreurs)
-          {{- $ports := default dict .Values.deployment.ports }}
-          {{- $targetPort := default dict $ports.targetPort }}
-          {{- $containerPort := default dict $ports.containerPort }}
-
-          {{- if or (eq $targetPort.enabled true) (eq $containerPort.enabled true) }}
+          image: {{ .Values.deployment.container.image }}         
           ports:
-          
-          {{- if  $targetPort.enabled }}
-          - targetPort: {{ $targetPort.value }}
+          {{- range .Values.deployment.ports }}
+          - containerPort: {{ .containerPort }}
+          - targetPort: {{ .targetPort }}
           {{- end }}
-
-          {{- if $containerPort.enabled }}
-          - containerPort: {{ $containerPort.value }}
-          {{- end }}
-
-          {{- end }}
-
           {{- if .Values.deployment.env.enabled }}
           env:
             - name: {{ .Values.deployment.env.name }}

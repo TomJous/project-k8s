@@ -1,44 +1,43 @@
 ---
-# Source: fleetman-api-gateaway/templates/service.yaml
+# Source: fleetman-position-tracker/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: fleetman-api-gateaway-release-name
+  name: fleetman-position-tracker-release-name
   namespace: 
 spec:
   selector:
-    app: fleetman-api-gateaway
+    app: fleetman-position-tracker
   ports:
     - protocol: TCP
       name: http
-      port: 30020
+      port: 30010
       targetPort: 8080
   type: ClusterIP
 ---
-# Source: fleetman-api-gateaway/templates/deployment.yaml
+# Source: fleetman-position-tracker/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fleetman-api-gateaway-release-name
+  name: fleetman-position-tracker-release-name
   namespace: 
   labels:
-    app: fleetman-api-gateaway-release-name
+    app: fleetman-position-tracker-release-name
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: fleetman-api-gateaway
+      app: fleetman-position-tracker
   template:
     metadata:
       labels:
-        app: fleetman-api-gateaway
+        app: fleetman-position-tracker
     spec:
       containers:
-        - name: fleetman-api-gateaway
-          image: supinfo4kube/api-gateway:1.0.1
-          ports:
-          - containerPort: 8090
-          - targetPort: 8080
+        - name: fleetman-position-tracker
+          image: supinfo4kube/position-tracker:1.0.1
+          
+          # Définition de mes dict pour éviter accès à la nil (éviter les erreurs)
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: local-microservice
