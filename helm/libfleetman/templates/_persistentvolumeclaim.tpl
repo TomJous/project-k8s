@@ -4,6 +4,8 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
+  labels :
+    app: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
   namespace: {{ .Values.namespace }}
 spec:
   accessModes:
@@ -11,6 +13,6 @@ spec:
   storageClassName: {{ .Values.persistentVolumeClaim.storageClassName }}
   resources:
     requests:
-      storage: {{ .Values.persistentVolumeClaim.storage }}
+      storage: {{ .Values.persistentVolumeClaim.size }}
 {{- end }}
 {{- end -}}

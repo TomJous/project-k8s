@@ -1,0 +1,68 @@
+---
+# Source: fleetman-mongodb/templates/persistentVolume.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fleetman-mongodb-release-name
+spec:
+  volumeMode: 
+  accessModes: 
+    - readWriteMany
+  ressources:
+    requests:
+      storage: 5Gi
+  storageClassName: standard
+---
+# Source: fleetman-mongodb/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-mongodb-release-name
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-mongodb
+  ports:
+    - protocol: TCP
+      name: http
+      port: 27017
+      targetPort: 27017
+  type: ClusterIP
+---
+# Source: fleetman-mongodb/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-mongodb-release-name
+  namespace: fleetman
+  labels:
+    app: fleetman-mongodb-release-name
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fleetman-mongodb
+  template:
+    metadata:
+      labels:
+        app: fleetman-mongodb
+    spec:
+      containers:
+        - name: fleetman-mongodb
+          image: mongo:3.6.23         
+          ports:
+          - containerPort: 27019
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: /data/db
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "20m"
+            limits:
+              memory: "512Mi"
+              cpu: "50m"
+      volumes:
+        - name: mongodb-data
+          persistentVolumeClaim:
+            claimName: fleetman-mongodb-release-name

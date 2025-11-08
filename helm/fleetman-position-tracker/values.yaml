@@ -23,6 +23,16 @@ deployment:
       limits:
         memory: "512Mi"
         cpu: "50m"
+    # Volume Mount
+    volumeMount:
+      enabled: true
+      name: position-tracker-data
+      mountPath: /data/position-tracker
+    # Volume
+    volume:
+      enabled: true
+      name: position-tracker-data
+      
     
 # Service
 service:
@@ -38,3 +48,9 @@ service:
       targetPort: 61616
 
 namespace: fleetman
+
+# PVC
+persistentVolumeClaim:
+  enabled: true
+  size: "1Gi"
+  accessModes: ReadWriteMany
