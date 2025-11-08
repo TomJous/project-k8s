@@ -25,6 +25,15 @@ deployment:
       limits:
         memory: "512Mi"
         cpu: "50m"
+    # Volume Mount
+    volumeMount:
+      enabled: true
+      name: api-gateway-data
+      mountPath: /data/api-gateway
+    # Volume
+    volume:
+      enabled: true
+      name: api-gateway-data
 
 # Service
 service:
@@ -36,3 +45,9 @@ service:
       targetPort: 8080
 
 namespace: fleetman
+
+# PVC
+persistentVolumeClaim:
+  enabled: true
+  size: "1Gi"
+  accessModes: ReadWriteMany

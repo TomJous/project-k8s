@@ -5,6 +5,52 @@ kind: Namespace
 metadata:
   name: fleetman
 ---
+# Source: ChartAll/charts/fleetman-mongodb/templates/persistentVolume.yaml
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fleetman-mongodb-release-name
+spec:
+  volumeMode: 
+  accessModes: 
+    - readWriteMany
+  ressources:
+    requests:
+      storage: 5Gi
+  storageClassName: standard
+---
+# Source: ChartAll/charts/fleetman-api-gateaway/templates/persistentVolumeClaim.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fleetman-api-gateaway-release-name
+  labels :
+    app: fleetman-api-gateaway-release-name
+  namespace: fleetman
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: 
+  resources:
+    requests:
+      storage: 1Gi
+---
+# Source: ChartAll/charts/fleetman-position-tracker/templates/persistentVolume.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fleetman-position-tracker-release-name
+  labels :
+    app: fleetman-position-tracker-release-name
+  namespace: fleetman
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: 
+  resources:
+    requests:
+      storage: 1Gi
+---
 # Source: ChartAll/charts/fleetman-api-gateaway/templates/service.yaml
 apiVersion: v1
 kind: Service
@@ -125,13 +171,15 @@ spec:
     spec:
       containers:
         - name: fleetman-api-gateaway
-          image: supinfo4kube/api-gateway:1.0.1
+          image: supinfo4kube/api-gateway:1.0.1         
           ports:
           - containerPort: 8090
-          - targetPort: 8080
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: local-microservice
+          volumeMounts:
+            - name: api-gateway-data
+              mountPath: /data/api-gateway
           resources:
             requests:
               memory: "256Mi"
@@ -139,6 +187,10 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "50m"
+      volumes:
+        - name: api-gateway-data
+          persistentVolumeClaim:
+            claimName: fleetman-api-gateaway-release-name
 ---
 # Source: ChartAll/charts/fleetman-mongodb/templates/deployment.yaml
 apiVersion: apps/v1
@@ -160,10 +212,12 @@ spec:
     spec:
       containers:
         - name: fleetman-mongodb
-          image: mongo:3.6.23
+          image: mongo:3.6.23         
           ports:
           - containerPort: 27019
-          - targetPort: 27019
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: /data/db
           resources:
             requests:
               memory: "256Mi"
@@ -171,6 +225,10 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "50m"
+      volumes:
+        - name: mongodb-data
+          persistentVolumeClaim:
+            claimName: fleetman-mongodb-release-name
 ---
 # Source: ChartAll/charts/fleetman-position-simulator/templates/deployment.yaml
 apiVersion: apps/v1
@@ -192,10 +250,9 @@ spec:
     spec:
       containers:
         - name: fleetman-position-simulator
-          image: richardchesterwood/k8s-fleetman-position-simulator:release2
+          image: richardchesterwood/k8s-fleetman-position-simulator:release2         
           ports:
           - containerPort: 5010
-          - targetPort: 5010
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: local-microservice
@@ -227,13 +284,15 @@ spec:
     spec:
       containers:
         - name: fleetman-position-tracker
-          image: supinfo4kube/position-tracker:1.0.1
+          image: supinfo4kube/position-tracker:1.0.1         
           ports:
           - containerPort: 8090
-          - targetPort: 8080
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: local-microservice
+          volumeMounts:
+            - name: position-tracker-data
+              mountPath: /data/position-tracker
           resources:
             requests:
               memory: "256Mi"
@@ -241,6 +300,10 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "50m"
+      volumes:
+        - name: position-tracker-data
+          persistentVolumeClaim:
+            claimName: fleetman-position-tracker-release-name
 ---
 # Source: ChartAll/charts/fleetman-queue/templates/deployment.yaml
 apiVersion: apps/v1
@@ -262,10 +325,9 @@ spec:
     spec:
       containers:
         - name: fleetman-queue
-          image: richardchesterwood/k8s-fleetman-queue:release2
+          image: richardchesterwood/k8s-fleetman-queue:release2         
           ports:
           - containerPort: 8090
-          - targetPort: 8080
           resources:
             requests:
               memory: "256Mi"
@@ -294,10 +356,9 @@ spec:
     spec:
       containers:
         - name: fleetman-webapp
-          image: supinfo4kube/web-app:1.1.0
+          image: supinfo4kube/web-app:1.1.0         
           ports:
           - containerPort: 8090
-          - targetPort: 8080
           resources:
             requests:
               memory: "256Mi"

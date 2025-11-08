@@ -5,18 +5,11 @@ kind: PersistentVolume
 metadata:
   name: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
 spec:
-  capacity:
-    storage: {{ .Values.persistentVolume.storage }}
-  volumeMode: {{ .Values.persistentVolume.volumeMode }}
-  accessModes:
-    - {{ .Values.persistentVolume.accessModes }}
-  persistentVolumeReclaimPolicy: {{ .Values.persistentVolume.persistentVolumeReclaimPolicy }}
-  storageClassName: {{ .Values.persistentVolume.storageClassName }}
-  mountOptions:
-    - hard
-    - nfsvers=4.1
-  nfs:
-    path: /tmp
-    server: 172.17.0.2
+  accessModes: 
+    - readWriteMany
+  ressources:
+    requests:
+      storage: {{ .Values.persistentVolume.size }}
+  storageClassName: standard
 {{- end }}
 {{- end -}}

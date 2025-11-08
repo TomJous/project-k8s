@@ -1,10 +1,26 @@
 ---
+# Source: fleetman-api-gateaway/templates/persistentVolumeClaim.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fleetman-api-gateaway-release-name
+  labels :
+    app: fleetman-api-gateaway-release-name
+  namespace: fleetman
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: 
+  resources:
+    requests:
+      storage: 1Gi
+---
 # Source: fleetman-api-gateaway/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: fleetman-api-gateaway-release-name
-  namespace: 
+  namespace: fleetman
 spec:
   selector:
     app: fleetman-api-gateaway
@@ -20,7 +36,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fleetman-api-gateaway-release-name
-  namespace: 
+  namespace: fleetman
   labels:
     app: fleetman-api-gateaway-release-name
 spec:
@@ -35,13 +51,15 @@ spec:
     spec:
       containers:
         - name: fleetman-api-gateaway
-          image: supinfo4kube/api-gateway:1.0.1
+          image: supinfo4kube/api-gateway:1.0.1         
           ports:
           - containerPort: 8090
-          - targetPort: 8080
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: local-microservice
+          volumeMounts:
+            - name: api-gateway-data
+              mountPath: /data/api-gateway
           resources:
             requests:
               memory: "256Mi"
@@ -49,3 +67,7 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "50m"
+      volumes:
+        - name: api-gateway-data
+          persistentVolumeClaim:
+            claimName: fleetman-api-gateaway-release-name

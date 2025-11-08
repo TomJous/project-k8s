@@ -1,18 +1,38 @@
 ---
+# Source: fleetman-position-tracker/templates/persistentVolume.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fleetman-position-tracker-release-name
+  labels :
+    app: fleetman-position-tracker-release-name
+  namespace: fleetman
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: 
+  resources:
+    requests:
+      storage: 1Gi
+---
 # Source: fleetman-position-tracker/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: fleetman-position-tracker-release-name
-  namespace: 
+  namespace: fleetman
 spec:
   selector:
     app: fleetman-position-tracker
   ports:
     - protocol: TCP
-      name: http
-      port: 30010
-      targetPort: 8080
+      name: first-port
+      port: 8161
+      targetPort: 8161
+    - protocol: TCP
+      name: second-port
+      port: 61616
+      targetPort: 61616
   type: ClusterIP
 ---
 # Source: fleetman-position-tracker/templates/deployment.yaml
@@ -20,7 +40,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fleetman-position-tracker-release-name
-  namespace: 
+  namespace: fleetman
   labels:
     app: fleetman-position-tracker-release-name
 spec:
@@ -35,12 +55,15 @@ spec:
     spec:
       containers:
         - name: fleetman-position-tracker
-          image: supinfo4kube/position-tracker:1.0.1
-          
-          # Définition de mes dict pour éviter accès à la nil (éviter les erreurs)
+          image: supinfo4kube/position-tracker:1.0.1         
+          ports:
+          - containerPort: 8090
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: local-microservice
+          volumeMounts:
+            - name: position-tracker-data
+              mountPath: /data/position-tracker
           resources:
             requests:
               memory: "256Mi"
@@ -48,3 +71,7 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "50m"
+      volumes:
+        - name: position-tracker-data
+          persistentVolumeClaim:
+            claimName: fleetman-position-tracker-release-name

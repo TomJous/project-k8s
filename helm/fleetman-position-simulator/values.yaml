@@ -23,6 +23,10 @@ deployment:
       limits:
         memory: "512Mi"
         cpu: "50m"
+    volumeMount:
+      enabled: false
+    volume:
+      enabeld: false
       
 
 # Service

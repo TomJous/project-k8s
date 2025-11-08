@@ -1,0 +1,47 @@
+---
+# Source: fleetman-webapp/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: fleetman-webapp-release-name
+  namespace: fleetman
+spec:
+  selector:
+    app: fleetman-webapp
+  ports:
+    - protocol: TCP
+      name: http
+      port: 3080
+      targetPort: 8080
+  type: LoadBalancer
+---
+# Source: fleetman-webapp/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fleetman-webapp-release-name
+  namespace: fleetman
+  labels:
+    app: fleetman-webapp-release-name
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: fleetman-webapp
+  template:
+    metadata:
+      labels:
+        app: fleetman-webapp
+    spec:
+      containers:
+        - name: fleetman-webapp
+          image: supinfo4kube/web-app:1.1.0         
+          ports:
+          - containerPort: 8090
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "20m"
+            limits:
+              memory: "512Mi"
+              cpu: "50m"

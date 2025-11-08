@@ -22,6 +22,16 @@ deployment:
       first-port:
         containerPort: 27019
         targetPort: 27019
+    # Volume Mount
+    volumeMount:
+      enabled: true
+      name: mongodb-data
+      mountPath: /data/db
+    # Volume
+    volume:
+      enabled: true
+      name: mongodb-data
+      
 
 # Service
 service:
@@ -33,3 +43,7 @@ service:
       targetPort: 27017
 
 namespace: fleetman
+
+persistentVolume:
+  enabled: true
+  size: "5Gi"

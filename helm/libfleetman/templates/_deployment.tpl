@@ -22,12 +22,16 @@ spec:
           ports:
           {{- range .Values.deployment.ports }}
           - containerPort: {{ .containerPort }}
-          - targetPort: {{ .targetPort }}
           {{- end }}
           {{- if .Values.deployment.env.enabled }}
           env:
             - name: {{ .Values.deployment.env.name }}
               value: {{ .Values.deployment.env.value }}
+          {{- end }}
+          {{- if .Values.deployment.volumeMount.enabled }}
+          volumeMounts:
+            - name: {{ .Values.deployment.volumeMount.name }}
+              mountPath: {{ .Values.deployment.volumeMount.mountPath }}
           {{- end }}
           
           {{- $ressources := default dict .Values.deployment.ressources }}
@@ -41,4 +45,10 @@ spec:
               memory: {{ .Values.deployment.ressources.limits.memory | quote }}
               cpu: {{ .Values.deployment.ressources.limits.cpu | quote}}
           {{- end }}
+      {{- if .Values.deployment.volume.enabled }}
+      volumes:
+        - name: {{ .Values.deployment.volume.name }}
+          persistentVolumeClaim:
+            claimName: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
+      {{- end }}
 {{- end -}}
