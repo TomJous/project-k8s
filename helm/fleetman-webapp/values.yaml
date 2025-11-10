@@ -10,7 +10,7 @@ deployment:
       enabled: false
     ports:
       first-port: 
-        containerPort: 8090
+        containerPort: 8080
         targetPort: 8080
     # it's about the ressources that can be used for this deployment
     ressources:

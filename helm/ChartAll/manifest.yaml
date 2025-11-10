@@ -9,57 +9,59 @@ metadata:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: fleetman-mongodb-release-name
+  name: fleetman-mongodb
 spec:
-  volumeMode: 
+  volumeMode: Filesystem
   accessModes: 
-    - readWriteMany
-  ressources:
-    requests:
-      storage: 5Gi
-  storageClassName: standard
+    - ReadWriteMany
+  capacity :
+    storage: 5Gi
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: hostpath
+  hostPath:
+      path: "/mnt/data"
 ---
-# Source: ChartAll/charts/fleetman-api-gateaway/templates/persistentVolumeClaim.yaml
+# Source: ChartAll/charts/fleetman-api-gateway/templates/persistentVolumeClaim.yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: fleetman-api-gateaway-release-name
+  name: fleetman-api-gateway
   labels :
-    app: fleetman-api-gateaway-release-name
-  namespace: fleetman
+    app: fleetman-api-gateway
+  namespace: default
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: 
+  storageClassName: hostpath
   resources:
     requests:
       storage: 1Gi
 ---
 # Source: ChartAll/charts/fleetman-position-tracker/templates/persistentVolume.yaml
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: fleetman-position-tracker-release-name
-  labels :
-    app: fleetman-position-tracker-release-name
-  namespace: fleetman
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: 
-  resources:
-    requests:
-      storage: 1Gi
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: fleetman-position-tracker
+#   labels :
+#     app: fleetman-position-tracker
+#   namespace: fleetman
+# spec:
+#   accessModes:
+#     - ReadWriteMany
+#   storageClassName: hostpath
+#   resources:
+#     requests:
+#       storage: 1Gi
 ---
-# Source: ChartAll/charts/fleetman-api-gateaway/templates/service.yaml
+# Source: ChartAll/charts/fleetman-api-gateway/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
-  name: fleetman-api-gateaway-release-name
-  namespace: fleetman
+  name: fleetman-api-gateway
+  namespace: default
 spec:
   selector:
-    app: fleetman-api-gateaway
+    app: fleetman-api-gateway
   ports:
     - protocol: TCP
       name: http
@@ -71,7 +73,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: fleetman-mongodb-release-name
+  name: fleetman-mongodb
   namespace: fleetman
 spec:
   selector:
@@ -87,7 +89,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: fleetman-position-simulator-release-name
+  name: fleetman-position-simulator
   namespace: fleetman
 spec:
   selector:
@@ -103,7 +105,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: fleetman-position-tracker-release-name
+  name: fleetman-position-tracker
   namespace: fleetman
 spec:
   selector:
@@ -123,7 +125,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: fleetman-queue-release-name
+  name: fleetman-queue
   namespace: fleetman
 spec:
   selector:
@@ -139,7 +141,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: fleetman-webapp-release-name
+  name: fleetman-webapp
   namespace: fleetman
 spec:
   selector:
@@ -151,29 +153,29 @@ spec:
       targetPort: 8080
   type: LoadBalancer
 ---
-# Source: ChartAll/charts/fleetman-api-gateaway/templates/deployment.yaml
+# Source: ChartAll/charts/fleetman-api-gateway/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fleetman-api-gateaway-release-name
-  namespace: fleetman
+  name: fleetman-api-gateway
+  namespace: default
   labels:
-    app: fleetman-api-gateaway-release-name
+    app: fleetman-api-gateway
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: fleetman-api-gateaway
+      app: fleetman-api-gateway
   template:
     metadata:
       labels:
-        app: fleetman-api-gateaway
+        app: fleetman-api-gateway
     spec:
       containers:
-        - name: fleetman-api-gateaway
+        - name: fleetman-api-gateway
           image: supinfo4kube/api-gateway:1.0.1         
           ports:
-          - containerPort: 8090
+          - containerPort: 8080
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: local-microservice
@@ -190,16 +192,16 @@ spec:
       volumes:
         - name: api-gateway-data
           persistentVolumeClaim:
-            claimName: fleetman-api-gateaway-release-name
+            claimName: fleetman-api-gateway
 ---
 # Source: ChartAll/charts/fleetman-mongodb/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fleetman-mongodb-release-name
+  name: fleetman-mongodb
   namespace: fleetman
   labels:
-    app: fleetman-mongodb-release-name
+    app: fleetman-mongodb
 spec:
   replicas: 2
   selector:
@@ -228,16 +230,16 @@ spec:
       volumes:
         - name: mongodb-data
           persistentVolumeClaim:
-            claimName: fleetman-mongodb-release-name
+            claimName: fleetman-mongodb
 ---
 # Source: ChartAll/charts/fleetman-position-simulator/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fleetman-position-simulator-release-name
+  name: fleetman-position-simulator
   namespace: fleetman
   labels:
-    app: fleetman-position-simulator-release-name
+    app: fleetman-position-simulator
 spec:
   replicas: 2
   selector:
@@ -268,10 +270,10 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fleetman-position-tracker-release-name
+  name: fleetman-position-tracker
   namespace: fleetman
   labels:
-    app: fleetman-position-tracker-release-name
+    app: fleetman-position-tracker
 spec:
   replicas: 2
   selector:
@@ -303,16 +305,16 @@ spec:
       volumes:
         - name: position-tracker-data
           persistentVolumeClaim:
-            claimName: fleetman-position-tracker-release-name
+            claimName: fleetman-position-tracker
 ---
 # Source: ChartAll/charts/fleetman-queue/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fleetman-queue-release-name
+  name: fleetman-queue
   namespace: fleetman
   labels:
-    app: fleetman-queue-release-name
+    app: fleetman-queue
 spec:
   replicas: 2
   selector:
@@ -340,10 +342,10 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fleetman-webapp-release-name
+  name: fleetman-webapp
   namespace: fleetman
   labels:
-    app: fleetman-webapp-release-name
+    app: fleetman-webapp
 spec:
   replicas: 2
   selector:
@@ -358,7 +360,7 @@ spec:
         - name: fleetman-webapp
           image: supinfo4kube/web-app:1.1.0         
           ports:
-          - containerPort: 8090
+          - containerPort: 8080
           resources:
             requests:
               memory: "256Mi"

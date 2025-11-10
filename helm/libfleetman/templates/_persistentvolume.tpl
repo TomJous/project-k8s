@@ -3,13 +3,16 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
+  name: {{ .Chart.Name }}
 spec:
+  volumeMode: Filesystem
   accessModes: 
-    - readWriteMany
-  ressources:
-    requests:
-      storage: {{ .Values.persistentVolume.size }}
-  storageClassName: standard
+    - ReadWriteMany
+  capacity :
+    storage: {{ .Values.persistentVolume.size }}
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: hostpath
+  hostPath:
+      path: "/mnt/data"
 {{- end }}
 {{- end -}}

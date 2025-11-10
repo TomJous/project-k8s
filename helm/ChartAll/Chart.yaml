@@ -27,9 +27,9 @@ dependencies:
   - name: fleetman-position-simulator
     repository: file://../fleetman-position-simulator
     version: 0.1.0
-  - name: fleetman-api-gateaway
+  - name: fleetman-api-gateway
     version: 0.1.0
-    repository: file://../fleetman-api-gateaway
+    repository: file://../fleetman-api-gateway
   - name: fleetman-mongodb
     repository: file://../fleetman-mongodb
     version: 0.1.0  

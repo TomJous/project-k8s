@@ -3,9 +3,9 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
+  name: {{ .Chart.Name }}
   labels :
-    app: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
+    app: {{ .Chart.Name }}
   namespace: {{ .Values.namespace }}
 spec:
   accessModes:

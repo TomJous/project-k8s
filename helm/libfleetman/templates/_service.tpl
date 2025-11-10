@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
+  name: {{ .Chart.Name }}
   namespace: {{ .Values.namespace }}
 spec:
   selector:

@@ -2,10 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
+  name: {{ .Chart.Name }}
   namespace: {{ .Values.namespace }}
   labels:
-    app: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
+    app: {{ .Chart.Name }}
 spec:
   replicas: {{ .Values.deployment.replicas }}
   selector:
@@ -49,6 +49,6 @@ spec:
       volumes:
         - name: {{ .Values.deployment.volume.name }}
           persistentVolumeClaim:
-            claimName: {{ .Release.Name | printf "%s-%s" .Chart.Name }}
+            claimName: {{ .Chart.Name }}
       {{- end }}
 {{- end -}}
