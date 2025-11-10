@@ -2,8 +2,8 @@ dependencies:
 - name: fleetman-position-simulator
   repository: file://../fleetman-position-simulator
   version: 0.1.0
-- name: fleetman-api-gateaway
-  repository: file://../fleetman-api-gateaway
+- name: fleetman-api-gateway
+  repository: file://../fleetman-api-gateway
   version: 0.1.0
 - name: fleetman-mongodb
   repository: file://../fleetman-mongodb
@@ -20,5 +20,5 @@ dependencies:
 - name: namespace
   repository: file://../namespace
   version: 0.1.0
-digest: sha256:00f7e079ea49c240ded2403d238f4ad2b8925f655397944fe8c6dceb78854bb8
-generated: "2025-11-06T22:47:49.539828975+01:00"
+digest: sha256:5e93858f72d50b4a67a590dce571b478e42f9ca8ed833a636e8b5f243c88ce75
+generated: "2025-11-09T19:20:45.842100458+01:00"

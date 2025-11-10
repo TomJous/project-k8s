@@ -13,7 +13,7 @@ deployment:
 
     ports:
       first-port: 
-        containerPort: 8090
+        containerPort: 8080
         targetPort: 8080
       
     # it's about the ressources that can be used for this deployment
@@ -44,10 +44,11 @@ service:
       port: 30020
       targetPort: 8080
 
-namespace: fleetman
+namespace: default
 
 # PVC
 persistentVolumeClaim:
   enabled: true
   size: "1Gi"
   accessModes: ReadWriteMany
+  storageClassName: standard
