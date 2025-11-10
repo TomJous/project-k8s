@@ -31,6 +31,7 @@ kubectl apply -f manifest.yaml
 
 ## Chart architecture
 
+```bash
 ├── allDependenciesUpdate.sh
 ├── helm
 │   ├── ChartAll
@@ -41,7 +42,6 @@ kubectl apply -f manifest.yaml
 │   ├── fleetman-api-gateway
 │   │   ├── Chart.lock
 │   │   ├── charts
-│   │   │   └── libfleetman-0.1.0.tgz
 │   │   ├── Chart.yaml
 │   │   ├── manifest.yaml
 │   │   ├── templates
@@ -53,7 +53,6 @@ kubectl apply -f manifest.yaml
 │   ├── fleetman-mongodb
 │   │   ├── Chart.lock
 │   │   ├── charts
-│   │   │   └── libfleetman-0.1.0.tgz
 │   │   ├── Chart.yaml
 │   │   ├── manifest.yaml
 │   │   ├── templates
@@ -110,3 +109,4 @@ kubectl apply -f manifest.yaml
 │       ├── templates
 │       │   └── namespace.yaml
 │       └── values.yaml
+```
