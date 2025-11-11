@@ -13,59 +13,43 @@ metadata:
 spec:
   volumeMode: Filesystem
   accessModes: 
-    - ReadWriteMany
+    - ReadWriteOnce
   capacity :
     storage: 5Gi
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: hostpath
+  storageClassName: standard
   hostPath:
       path: "/mnt/data"
 ---
-# Source: ChartAll/charts/fleetman-api-gateway/templates/persistentVolumeClaim.yaml
+# Source: ChartAll/charts/fleetman-mongodb/templates/persistentVolumeClaim.yaml
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: fleetman-api-gateway
+  name: fleetman-mongodb
   labels :
-    app: fleetman-api-gateway
-  namespace: default
+    app: fleetman-mongodb
+  namespace: fleetman
 spec:
   accessModes:
-    - ReadWriteMany
-  storageClassName: hostpath
+    - ReadWriteOnce
+  storageClassName: standard
   resources:
     requests:
       storage: 1Gi
----
-# Source: ChartAll/charts/fleetman-position-tracker/templates/persistentVolume.yaml
-# apiVersion: v1
-# kind: PersistentVolumeClaim
-# metadata:
-#   name: fleetman-position-tracker
-#   labels :
-#     app: fleetman-position-tracker
-#   namespace: fleetman
-# spec:
-#   accessModes:
-#     - ReadWriteMany
-#   storageClassName: hostpath
-#   resources:
-#     requests:
-#       storage: 1Gi
 ---
 # Source: ChartAll/charts/fleetman-api-gateway/templates/service.yaml
 apiVersion: v1
 kind: Service
 metadata:
   name: fleetman-api-gateway
-  namespace: default
+  namespace: fleetman
 spec:
   selector:
     app: fleetman-api-gateway
   ports:
     - protocol: TCP
       name: http
-      port: 30020
+      port: 8080
       targetPort: 8080
   type: ClusterIP
 ---
@@ -97,7 +81,7 @@ spec:
   ports:
     - protocol: TCP
       name: http
-      port: 8080
+      port: 30020
       targetPort: 8080
   type: ClusterIP
 ---
@@ -113,12 +97,8 @@ spec:
   ports:
     - protocol: TCP
       name: first-port
-      port: 8161
-      targetPort: 8161
-    - protocol: TCP
-      name: second-port
-      port: 61616
-      targetPort: 61616
+      port: 30010
+      targetPort: 8080
   type: ClusterIP
 ---
 # Source: ChartAll/charts/fleetman-queue/templates/service.yaml
@@ -132,9 +112,13 @@ spec:
     app: fleetman-queue
   ports:
     - protocol: TCP
-      name: http
-      port: 8080
-      targetPort: 8080
+      name: first-port
+      port: 8161
+      targetPort: 8161
+    - protocol: TCP
+      name: second-port
+      port: 61616
+      targetPort: 61616
   type: ClusterIP
 ---
 # Source: ChartAll/charts/fleetman-webapp/templates/service.yaml
@@ -149,20 +133,21 @@ spec:
   ports:
     - protocol: TCP
       name: http
-      port: 3080
-      targetPort: 8080
-  type: LoadBalancer
+      port: 80
+      targetPort: 80
+      nodePort: 30080
+  type: NodePort
 ---
 # Source: ChartAll/charts/fleetman-api-gateway/templates/deployment.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: fleetman-api-gateway
-  namespace: default
+  namespace: fleetman
   labels:
     app: fleetman-api-gateway
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: fleetman-api-gateway
@@ -179,9 +164,6 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: local-microservice
-          volumeMounts:
-            - name: api-gateway-data
-              mountPath: /data/api-gateway
           resources:
             requests:
               memory: "256Mi"
@@ -189,10 +171,6 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "50m"
-      volumes:
-        - name: api-gateway-data
-          persistentVolumeClaim:
-            claimName: fleetman-api-gateway
 ---
 # Source: ChartAll/charts/fleetman-mongodb/templates/deployment.yaml
 apiVersion: apps/v1
@@ -203,7 +181,7 @@ metadata:
   labels:
     app: fleetman-mongodb
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: fleetman-mongodb
@@ -216,7 +194,7 @@ spec:
         - name: fleetman-mongodb
           image: mongo:3.6.23         
           ports:
-          - containerPort: 27019
+          - containerPort: 27017
           volumeMounts:
             - name: mongodb-data
               mountPath: /data/db
@@ -241,7 +219,7 @@ metadata:
   labels:
     app: fleetman-position-simulator
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: fleetman-position-simulator
@@ -252,9 +230,9 @@ spec:
     spec:
       containers:
         - name: fleetman-position-simulator
-          image: richardchesterwood/k8s-fleetman-position-simulator:release2         
+          image: supinfo4kube/position-simulator:1.0.1         
           ports:
-          - containerPort: 5010
+          - containerPort: 8080
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: local-microservice
@@ -275,7 +253,7 @@ metadata:
   labels:
     app: fleetman-position-tracker
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: fleetman-position-tracker
@@ -288,13 +266,10 @@ spec:
         - name: fleetman-position-tracker
           image: supinfo4kube/position-tracker:1.0.1         
           ports:
-          - containerPort: 8090
+          - containerPort: 8080
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: local-microservice
-          volumeMounts:
-            - name: position-tracker-data
-              mountPath: /data/position-tracker
           resources:
             requests:
               memory: "256Mi"
@@ -302,10 +277,6 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "50m"
-      volumes:
-        - name: position-tracker-data
-          persistentVolumeClaim:
-            claimName: fleetman-position-tracker
 ---
 # Source: ChartAll/charts/fleetman-queue/templates/deployment.yaml
 apiVersion: apps/v1
@@ -316,7 +287,7 @@ metadata:
   labels:
     app: fleetman-queue
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: fleetman-queue
@@ -327,9 +298,9 @@ spec:
     spec:
       containers:
         - name: fleetman-queue
-          image: richardchesterwood/k8s-fleetman-queue:release2         
+          image: supinfo4kube/queue:1.0.1         
           ports:
-          - containerPort: 8090
+          - containerPort: 8161
           resources:
             requests:
               memory: "256Mi"
@@ -347,7 +318,7 @@ metadata:
   labels:
     app: fleetman-webapp
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: fleetman-webapp
@@ -358,9 +329,9 @@ spec:
     spec:
       containers:
         - name: fleetman-webapp
-          image: supinfo4kube/web-app:1.1.0         
+          image: supinfo4kube/web-app:1.1.0-dockercompose         
           ports:
-          - containerPort: 8080
+          - containerPort: 80
           resources:
             requests:
               memory: "256Mi"
