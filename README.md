@@ -67,15 +67,21 @@ API-Gateway : starting point of the web-app
 
 For every Chart we have the following configuration:
 -Chart.lock : declare the inclusion of other charts 
--chart/ : the binary of the included libs 
--Chart.yaml : declare the chart
+-charts/ : contain the binaries of the included libs 
+-Chart.yaml : declare the chart and is dependencies
 -values.yaml : set the independent values of the chart
--templates/:
-    deployment.yaml : import his deployment template from lib
-    service.yaml : import his service template from lib
+-templates/: contain the template needed for the App imported from libfleetman  
 
 
-As you can see each chart have is own conception for example ChartAll
+As you can see some templates have also additionnal files 
+ For fleetman-api-gateway:
+    -persistentVolumeClaim.yaml : declare the access and ressources needed for a request 
+
+For fleetman-mongodb and fleetman-position-tracker
+    -persistentVolume.yaml : declare where and how the data will be stored 
+
+The library contains _helpers.tpl and every template, so that the chart can pick only the ones he need.
+
 
 ```bash
 ├── allDependenciesUpdate.sh
