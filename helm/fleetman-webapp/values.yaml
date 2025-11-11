@@ -1,17 +1,16 @@
 # Deployment
 deployment:
     # Set the replicas number
-    replicas: 2
+    replicas: 1
     # precise the container image used for this chart
     container:
-      image: supinfo4kube/web-app:1.1.0
+      image: supinfo4kube/web-app:1.1.0-dockercompose
     # precise the environment to use 
     env:
       enabled: false
     ports:
       first-port: 
-        containerPort: 8080
-        targetPort: 8080
+        containerPort: 80
     # it's about the ressources that can be used for this deployment
     ressources:
       enabled: true
@@ -33,9 +32,9 @@ service:
   ports:
     first-port:
       name: http
-      port: 3080
-      targetPort: 8080
+      port: 80
+      targetPort: 30080
   
-  type: LoadBalancer
+  type: NodePort
 
 namespace: fleetman

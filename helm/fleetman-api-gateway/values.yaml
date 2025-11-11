@@ -1,7 +1,7 @@
 # Deployment
 deployment:
     # precise the number of replicas
-    replicas: 2
+    replicas: 1
     # precise the container image used for this chart
     container:
       image: supinfo4kube/api-gateway:1.0.1
@@ -27,13 +27,10 @@ deployment:
         cpu: "50m"
     # Volume Mount
     volumeMount:
-      enabled: true
-      name: api-gateway-data
-      mountPath: /data/api-gateway
+      enabled: false
     # Volume
     volume:
-      enabled: true
-      name: api-gateway-data
+      enabled: false
 
 # Service
 service:
@@ -41,14 +38,7 @@ service:
   ports:
     first-port:
       name: http
-      port: 30020
+      port: 8080
       targetPort: 8080
 
-namespace: default
-
-# PVC
-persistentVolumeClaim:
-  enabled: true
-  size: "1Gi"
-  accessModes: ReadWriteMany
-  storageClassName: standard
+namespace: fleetman

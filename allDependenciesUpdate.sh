@@ -15,3 +15,7 @@ for d in $SCRIPT_DIR/helm/*/; do
     helm dependency update "$d"
   fi
 done
+
+# Mettre à jour le ChartAll à la fin pour avoir toutes les mises à jours
+echo "Updating dependencies in $SCRIPT_DIR/helm/ChartAll"
+helm dependency update "$SCRIPT_DIR/helm/ChartAll"
