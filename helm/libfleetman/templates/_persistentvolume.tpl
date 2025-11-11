@@ -7,12 +7,12 @@ metadata:
 spec:
   volumeMode: Filesystem
   accessModes: 
-    - ReadWriteMany
+    - {{ .Values.persistentVolume.accessModes }}
   capacity :
     storage: {{ .Values.persistentVolume.size }}
-  persistentVolumeReclaimPolicy: Retain
-  storageClassName: hostpath
+  persistentVolumeReclaimPolicy: {{ .Values.persistentVolume.persistentVolumeReclaimPolicy }}
+  storageClassName: {{ .Values.persistentVolume.storageClassName }}
   hostPath:
-      path: "/mnt/data"
+      path: {{ .Values.persistentVolume.path | quote }}
 {{- end }}
 {{- end -}}

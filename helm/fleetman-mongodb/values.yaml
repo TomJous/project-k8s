@@ -1,7 +1,7 @@
 # Deployment
 deployment:
     # Set the replicas number
-    replicas: 2
+    replicas: 1
     # precise the container image used for this chart
     container:
       image: mongo:3.6.23
@@ -20,8 +20,7 @@ deployment:
     
     ports:
       first-port:
-        containerPort: 27019
-        targetPort: 27019
+        containerPort: 27017
     # Volume Mount
     volumeMount:
       enabled: true
@@ -44,6 +43,18 @@ service:
 
 namespace: fleetman
 
+# PV
 persistentVolume:
   enabled: true
   size: "5Gi"
+  accessModes: ReadWriteOnce
+  storageClassName: standard
+  persistentVolumeReclaimPolicy: Retain
+  path: "/mnt/data"
+
+# PVC
+persistentVolumeClaim:
+  enabled: true
+  size: "1Gi"
+  accessModes: ReadWriteOnce
+  storageClassName: standard

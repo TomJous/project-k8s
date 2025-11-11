@@ -1,17 +1,16 @@
 # Deployment
 deployment:
     # Set the replicas number
-    replicas: 2
+    replicas: 1
     # precise the container image used for this chart
     container:
-      image: richardchesterwood/k8s-fleetman-queue:release2
+      image: supinfo4kube/queue:1.0.1  
     # precise the environment to use 
     env:
       enabled: false
     ports:
       first-port: 
-        containerPort: 8090
-        targetPort: 8080
+        containerPort: 8161
     # it's about the ressources that can be used for this deployment
     ressources:
       enabled: true
@@ -31,8 +30,12 @@ service:
   # precise the differents ports to use for the application
   ports:
     first-port:
-      name: http
-      port: 8080
-      targetPort: 8080
+      name: first-port
+      port: 8161
+      targetPort: 8161
+    second-port:
+      name: second-port
+      port: 61616
+      targetPort: 61616
 
 namespace: fleetman

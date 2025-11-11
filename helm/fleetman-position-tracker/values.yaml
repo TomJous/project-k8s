@@ -1,7 +1,7 @@
 # Deployment
 deployment:
     # Set the replicas number
-    replicas: 2
+    replicas: 1
     # precise the container / image used for this chart
     container:
       image: supinfo4kube/position-tracker:1.0.1
@@ -12,8 +12,7 @@ deployment:
       value: local-microservice
     ports:
       first-port: 
-        containerPort: 8090
-        targetPort: 8080
+        containerPort: 8080
     # it's about the ressources that can be used for this deployment
     ressources:
       enabled: true
@@ -25,13 +24,10 @@ deployment:
         cpu: "50m"
     # Volume Mount
     volumeMount:
-      enabled: true
-      name: position-tracker-data
-      mountPath: /data/position-tracker
+      enabled: false
     # Volume
     volume:
-      enabled: true
-      name: position-tracker-data
+      enabled: false
       
     
 # Service
@@ -40,12 +36,8 @@ service:
   ports:
     first-port:
       name: first-port
-      port: 8161
-      targetPort: 8161
-    second-port:
-      name: second-port
-      port: 61616
-      targetPort: 61616
+      port: 30010
+      targetPort: 8080
 
 namespace: fleetman
 

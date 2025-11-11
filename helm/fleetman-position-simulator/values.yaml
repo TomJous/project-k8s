@@ -1,10 +1,10 @@
 # Deployment
 deployment:
     # Set the replicas number
-    replicas: 2
+    replicas: 1
     # precise the container image used for this chart
     container:
-      image: richardchesterwood/k8s-fleetman-position-simulator:release2
+      image: supinfo4kube/position-simulator:1.0.1
     # precise the environment to use 
     env:
       enabled: true
@@ -12,8 +12,7 @@ deployment:
       value: local-microservice
     ports:
       first-port:
-        containerPort: 5010
-        targetPort: 5010
+        containerPort: 8080
     # it's about the ressources that can be used for this deployment
     ressources:
       enabled: true
@@ -35,7 +34,7 @@ service:
   ports:
     first-port:
       name: http
-      port: 8080
+      port: 30020
       targetPort: 8080
 
 namespace: fleetman
