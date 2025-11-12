@@ -46,8 +46,6 @@ helm template . > manifest.yaml
 kubectl apply -f manifest.yaml
 ```
 
-### Congratz, your application works properly ! 
-
 
 # Technical choice explanation 
 
