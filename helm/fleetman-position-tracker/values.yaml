@@ -9,7 +9,7 @@ deployment:
     env:
       enabled: true
       name: SPRING_PROFILES_ACTIVE
-      value: local-microservice
+      value: production-microservice
     ports:
       first-port: 
         containerPort: 8080
