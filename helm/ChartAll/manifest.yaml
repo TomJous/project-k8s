@@ -163,7 +163,7 @@ spec:
           - containerPort: 8080
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: local-microservice
+              value: production-microservice
           resources:
             requests:
               memory: "256Mi"
@@ -235,7 +235,7 @@ spec:
           - containerPort: 8080
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: local-microservice
+              value: production-microservice
           resources:
             requests:
               memory: "256Mi"
@@ -269,7 +269,7 @@ spec:
           - containerPort: 8080
           env:
             - name: SPRING_PROFILES_ACTIVE
-              value: local-microservice
+              value: production-microservice
           resources:
             requests:
               memory: "256Mi"
