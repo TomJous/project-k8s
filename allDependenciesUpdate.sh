@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# Script pour mettre à jourd les dépendances de tous les charts Helm
-# Donner les permissions d'exécutions : chmod +x allDependenciesUpdate.sh
-# L'exécuter de cette façon : ./allDependenciesUpdate.sh
+# Script to update dependencies for all Helm charts
+# Give execution permissions: chmod +x allDependenciesUpdate.sh
+# Run it this way: ./allDependenciesUpdate.sh
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-# Le chemin du script
+# The script path
 echo "Script directory : $SCRIPT_DIR" 
 
-# Parcourir chaque Chart dans le dossier helm
+# For each Chart in the directory helm, we update the dependencies of each one
 for d in $SCRIPT_DIR/helm/*/; do
   if [ -f "$d/Chart.yaml" ]; then
     echo "Updating dependencies in $d"
@@ -16,6 +16,6 @@ for d in $SCRIPT_DIR/helm/*/; do
   fi
 done
 
-# Mettre à jour le ChartAll à la fin pour avoir toutes les mises à jours
+# Update the ChartAll to take all the changes
 echo "Updating dependencies in $SCRIPT_DIR/helm/ChartAll"
 helm dependency update "$SCRIPT_DIR/helm/ChartAll"

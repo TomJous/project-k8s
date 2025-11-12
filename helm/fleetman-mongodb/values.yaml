@@ -17,7 +17,7 @@ deployment:
       limits:
         memory: "512Mi"
         cpu: "50m"
-    
+    # precise the ports to use
     ports:
       first-port:
         containerPort: 27017
@@ -46,6 +46,7 @@ namespace: fleetman
 # PV
 persistentVolume:
   enabled: true
+  # The stockage of the DB
   size: "5Gi"
   accessModes: ReadWriteOnce
   storageClassName: standard
